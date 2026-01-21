@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GlobalFlow - Solicitudes de Envío</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-yN44jW+UoBEcE0ek7gD77kz9tr6h5rQKLBp+0YXuD+EZoQq8FUt0LnokV5q6G6YQ9lB4E5PffbP8MKjV+XG0UQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script>
+      window.tailwind = window.tailwind || {};
+      window.tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "ui-sans-serif", "system-ui"],
+            },
+            colors: {
+              primary: {
+                50: "#eef2ff",
+                100: "#e0e7ff",
+                500: "#3b82f6",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <div id="app" class="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 font-sans">
+      <header class="bg-slate-900/60 border-b border-slate-800">
+        <div class="mx-auto max-w-6xl px-6 py-8">
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p class="text-sm uppercase tracking-[0.4em] text-slate-400">GlobalFlow</p>
+              <h1 class="text-3xl font-semibold text-slate-50">Dashboard de Solicitudes de Envío</h1>
+              <p class="text-slate-300">Visibilidad total del ciclo financiero y operativo.</p>
+            </div>
+            <div class="flex items-center gap-3 text-sm text-slate-300">
+              <i class="fa-solid fa-globe text-primary-400"></i>
+              Operaciones en tiempo real
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="mx-auto max-w-6xl px-6 py-10 space-y-12">
+        <section class="space-y-6">
+          <h2 class="text-lg font-semibold text-slate-100">Widgets Operativos</h2>
+          <div class="grid gap-6 md:grid-cols-3">
+            <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm uppercase text-slate-400">Envíos Totales</p>
+                  <p class="text-3xl font-bold text-slate-50">{{ totals.totalShipments }}</p>
+                </div>
+                <i class="fa-solid fa-dolly text-2xl text-primary-400"></i>
+              </div>
+            </article>
+            <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm uppercase text-slate-400">Peso Total (KG)</p>
+                  <p class="text-3xl font-bold text-slate-50">{{ totals.totalWeight }}</p>
+                </div>
+                <i class="fa-solid fa-weight-scale text-2xl text-primary-400"></i>
+              </div>
+            </article>
+            <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm uppercase text-slate-400">Ingresos Reales (USD)</p>
+                  <p class="text-3xl font-bold text-emerald-400">{{ currency(totals.ingresosReales) }}</p>
+                </div>
+                <i class="fa-solid fa-hand-holding-dollar text-2xl text-emerald-400"></i>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold text-slate-100">Paso a paso - Solicitud de Envío</h2>
+            <div class="flex gap-2 text-sm text-slate-300">
+              <span class="font-semibold text-primary-200">Paso {{ currentStep }} / 4</span>
+            </div>
+          </div>
+
+          <div class="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 shadow-2xl shadow-slate-950/30">
+            <div class="flex items-center justify-between gap-4 border-b border-slate-800 pb-5">
+              <div class="flex flex-wrap gap-4">
+                <span
+                  v-for="step in steps"
+                  :key="step.id"
+                  class="flex items-center gap-2 rounded-full border px-4 py-1 text-sm"
+                  :class="{
+                    'border-primary-400 bg-primary-500/10 text-primary-50': step.id === currentStep,
+                    'border-slate-700 text-slate-400': step.id !== currentStep
+                  }"
+                >
+                  <i :class="step.icon"></i>
+                  {{ step.label }}
+                </span>
+              </div>
+              <div class="text-xs uppercase tracking-[0.4em] text-slate-500">MVP</div>
+            </div>
+
+            <div class="mt-6 space-y-6">
+              <div v-if="currentStep === 1" class="grid gap-4 md:grid-cols-2">
+                <label class="space-y-2 text-sm text-slate-300">
+                  <span>Nombre del Remitente</span>
+                  <input
+                    v-model="form.senderName"
+                    type="text"
+                    class="w-full rounded-2xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 outline-none transition focus:border-primary-400"
+                    placeholder="Ej. Transportes Vega"
+                  />
+                </label>
+                <label class="space-y-2 text-sm text-slate-300">
+                  <span>ID Fiscal</span>
+                  <input
+                    v-model="form.fiscalId"
+                    type="text"
+                    class="w-full rounded-2xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 outline-none transition focus:border-primary-400"
+                    placeholder="NIT o RUC"
+                  />
+                </label>
+              </div>
+
+              <div v-else-if="currentStep === 2" class="grid gap-4 md:grid-cols-2">
+                <label class="space-y-2 text-sm text-slate-300">
+                  <span>Origen</span>
+                  <select
+                    v-model="form.origin"
+                    class="w-full rounded-2xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 outline-none transition focus:border-primary-400"
+                  >
+                    <option value="">Seleccione</option>
+                    <option value="Bogotá">Bogotá, Colombia</option>
+                    <option value="Ciudad de México">Ciudad de México, México</option>
+                    <option value="Santiago">Santiago, Chile</option>
+                    <option value="Miami">Miami, EE.UU.</option>
+                  </select>
+                </label>
+                <label class="space-y-2 text-sm text-slate-300">
+                  <span>Destino</span>
+                  <select
+                    v-model="form.destination"
+                    class="w-full rounded-2xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 outline-none transition focus:border-primary-400"
+                  >
+                    <option value="">Seleccione</option>
+                    <option value="Madrid">Madrid, España</option>
+                    <option value="Londres">Londres, Reino Unido</option>
+                    <option value="São Paulo">São Paulo, Brasil</option>
+                    <option value="Ciudad de Panamá">Ciudad de Panamá, Panamá</option>
+                  </select>
+                </label>
+                <label class="space-y-2 text-sm text-slate-300 md:col-span-2">
+                  <span>Tipo de carga</span>
+                  <div class="grid gap-3 md:grid-cols-2">
+                    <label
+                      class="flex cursor-pointer select-none items-center gap-3 rounded-2xl border px-4 py-3 transition"
+                      :class="form.cargoType === 'aereo' ? 'border-primary-400 bg-primary-500/10' : 'border-slate-700 bg-slate-950/40'"
+                    >
+                      <input type="radio" value="aereo" v-model="form.cargoType" class="hidden" />
+                      <i class="fa-solid fa-plane text-primary-400"></i>
+                      <span>Aéreo</span>
+                    </label>
+                    <label
+                      class="flex cursor-pointer select-none items-center gap-3 rounded-2xl border px-4 py-3 transition"
+                      :class="form.cargoType === 'maritimo' ? 'border-primary-400 bg-primary-500/10' : 'border-slate-700 bg-slate-950/40'"
+                    >
+                      <input type="radio" value="maritimo" v-model="form.cargoType" class="hidden" />
+                      <i class="fa-solid fa-ship text-primary-400"></i>
+                      <span>Marítimo / Terrestre</span>
+                    </label>
+                  </div>
+                </label>
+              </div>
+
+              <div v-else-if="currentStep === 3" class="grid gap-4 md:grid-cols-2">
+                <label class="space-y-2 text-sm text-slate-300">
+                  <span>Peso estimado (KG)</span>
+                  <input
+                    v-model="form.weight"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    class="w-full rounded-2xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 outline-none transition focus:border-primary-400"
+                    placeholder="0.0"
+                  />
+                </label>
+                <label class="space-y-2 text-sm text-slate-300">
+                  <span>Fecha de despacho</span>
+                  <input
+                    v-model="form.dispatchDate"
+                    type="date"
+                    class="w-full rounded-2xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 outline-none transition focus:border-primary-400"
+                  />
+                </label>
+                <label class="space-y-2 text-sm text-slate-300">
+                  <span>Fecha estimada de arribo</span>
+                  <input
+                    v-model="form.arrivalDate"
+                    type="date"
+                    class="w-full rounded-2xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 outline-none transition focus:border-primary-400"
+                  />
+                </label>
+              </div>
+
+              <div v-else class="space-y-4">
+                <div class="grid gap-4 md:grid-cols-2">
+                  <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Resumen</p>
+                    <p class="text-sm text-slate-300">Remitente: <span class="font-medium text-slate-100">{{ form.senderName || 'Sin datos' }}</span></p>
+                    <p class="text-sm text-slate-300">Origen ➜ Destino: <span class="font-medium text-slate-100">{{ form.origin || '---' }} ➜ {{ form.destination || '---' }}</span></p>
+                    <p class="text-sm text-slate-300">Tipo de carga: <span class="font-medium text-slate-100">{{ cargoTypeLabel }}</span></p>
+                    <p class="text-sm text-slate-300">Peso: <span class="font-medium text-slate-100">{{ form.weight || 0 }} KG</span></p>
+                  </div>
+                  <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Finanzas</p>
+                    <p class="text-sm text-slate-300">Costo base: <span class="font-medium text-slate-100">{{ currency(costBase) }}</span></p>
+                    <p class="text-sm text-slate-300">Tasas (12%): <span class="font-medium text-slate-100">{{ currency(costBase * 0.12) }}</span></p>
+                    <p class="text-2xl font-bold text-primary-400">{{ currency(costTotal) }}</p>
+                    <p class="text-xs text-slate-500">*El dato se actualizará en vivo</p>
+                  </div>
+                </div>
+                <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Fechas</p>
+                  <div class="grid gap-2 md:grid-cols-2">
+                    <p class="text-sm text-slate-300">Despacho: <span class="font-medium text-slate-100">{{ formattedDate(form.dispatchDate) }}</span></p>
+                    <p class="text-sm text-slate-300">Arribo: <span class="font-medium text-slate-100">{{ formattedDate(form.arrivalDate) }}</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <footer class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 pt-5 text-sm text-slate-300">
+              <button
+                class="rounded-2xl border border-slate-700 px-6 py-3 transition hover:border-primary-400"
+                :disabled="currentStep === 1"
+                @click="currentStep--"
+              >
+                <i class="fa-solid fa-arrow-left mr-2"></i>
+                Atrás
+              </button>
+              <button
+                class="rounded-2xl bg-primary-500 px-6 py-3 font-semibold text-white transition hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-slate-700"
+                v-if="currentStep < 4"
+                @click="handleNextStep"
+              >
+                Siguiente
+                <i class="fa-solid fa-arrow-right ml-2"></i>
+              </button>
+              <button
+                class="rounded-2xl bg-emerald-500 px-6 py-3 font-semibold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-slate-700"
+                v-else
+                :disabled="!isFormValid"
+                @click="submitForm"
+              >
+                Finalizar & Registrar
+              </button>
+            </footer>
+          </div>
+        </section>
+
+        <section class="space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold text-slate-100">Monitoreo de Solicitudes</h2>
+            <p class="text-sm text-slate-400">Actualiza estados y elimina con confirmación</p>
+          </div>
+
+          <div class="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 shadow-2xl shadow-slate-950/30">
+            <div v-if="shipments.length === 0" class="rounded-2xl border border-dashed border-slate-700/80 p-8 text-center text-slate-400">
+              Aún no hay envíos registrados. Completa el formulario para agregar el primero.
+            </div>
+            <div v-else class="overflow-x-auto">
+              <table class="w-full text-left text-sm text-slate-200">
+                <thead class="text-xs uppercase tracking-[0.4em] text-slate-500">
+                  <tr>
+                    <th class="px-4 py-3">Remitente</th>
+                    <th class="px-4 py-3">Ruta</th>
+                    <th class="px-4 py-3">Peso (KG)</th>
+                    <th class="px-4 py-3">Costo</th>
+                    <th class="px-4 py-3">Estado</th>
+                    <th class="px-4 py-3">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                  <tr v-for="shipment in shipments" :key="shipment.id">
+                    <td class="whitespace-nowrap px-4 py-4">
+                      <p class="font-semibold text-slate-100">{{ shipment.sender }}</p>
+                      <p class="text-xs text-slate-400">{{ shipment.fiscalId }}</p>
+                    </td>
+                    <td class="px-4 py-4">
+                      <p class="font-medium text-slate-100">{{ shipment.origin }} ➜ {{ shipment.destination }}</p>
+                      <p class="text-xs text-slate-400">{{ shipment.cargoLabel }}</p>
+                    </td>
+                    <td class="px-4 py-4">{{ shipment.weight }}</td>
+                    <td class="px-4 py-4 font-semibold text-primary-300">{{ currency(shipment.cost) }}</td>
+                    <td class="px-4 py-4">
+                      <span
+                        class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                        :class="{
+                          'bg-amber-500/20 text-amber-200': shipment.status === 'Pendiente',
+                          'bg-blue-500/20 text-blue-200': shipment.status === 'En Tránsito',
+                          'bg-emerald-500/20 text-emerald-200': shipment.status === 'Entregado'
+                        }"
+                      >
+                        {{ shipment.status }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-4">
+                      <div class="flex flex-wrap gap-3">
+                        <button
+                          class="rounded-2xl border border-slate-700 px-3 py-1 text-xs text-slate-200 transition hover:border-primary-400"
+                          :disabled="shipment.status === 'Entregado'"
+                          @click="advanceStatus(shipment)"
+                        >
+                          {{ nextStatusLabel(shipment) }}
+                        </button>
+                        <button
+                          class="rounded-2xl border border-red-600/80 px-3 py-1 text-xs text-red-300 transition hover:border-red-400"
+                          @click="confirmDeletion(shipment)"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const { createApp, computed, reactive, ref } = Vue;
+
+      createApp({
+        setup() {
+          const statuses = ["Pendiente", "En Tránsito", "Entregado"];
+          const steps = [
+            { id: 1, label: "Identidad", icon: "fa-solid fa-id-card-clip" },
+            { id: 2, label: "Logística", icon: "fa-solid fa-route" },
+            { id: 3, label: "Temporalidad", icon: "fa-solid fa-calendar-days" },
+            { id: 4, label: "Finanzas", icon: "fa-solid fa-chart-line" },
+          ];
+
+          const currentStep = ref(1);
+          const form = reactive({
+            senderName: "",
+            fiscalId: "",
+            origin: "",
+            destination: "",
+            cargoType: "",
+            weight: "",
+            dispatchDate: "",
+            arrivalDate: "",
+          });
+
+          const shipments = ref([]);
+
+          const isFormValid = computed(() => {
+            const required = [
+              form.senderName,
+              form.fiscalId,
+              form.origin,
+              form.destination,
+              form.cargoType,
+              form.weight,
+              form.dispatchDate,
+              form.arrivalDate,
+            ];
+            return required.every((value) => String(value).trim().length > 0);
+          });
+
+          const weightNumber = computed(() => parseFloat(form.weight) || 0);
+          const baseRate = computed(() =>
+            form.cargoType === "aereo" ? 45 : form.cargoType === "maritimo" ? 18 : 0
+          );
+          const costBase = computed(() => weightNumber.value * baseRate.value);
+          const costTotal = computed(() => parseFloat((costBase.value * 1.12).toFixed(2)));
+
+          const totals = computed(() => ({
+            totalShipments: shipments.value.length,
+            totalWeight: shipments.value.reduce((sum, shipment) => sum + shipment.weight, 0),
+            ingresosReales: shipments.value
+              .filter((shipment) => shipment.status === "Entregado")
+              .reduce((sum, shipment) => sum + shipment.cost, 0),
+          }));
+
+          const cargoTypeLabel = computed(() => {
+            if (form.cargoType === "aereo") return "Aéreo";
+            if (form.cargoType === "maritimo") return "Marítimo / Terrestre";
+            return "Sin seleccionar";
+          });
+
+          const formattedDate = (value) => {
+            if (!value) return "---";
+            const date = new Date(value);
+            return date.toLocaleDateString("es-ES", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            });
+          };
+
+          const currency = (value) =>
+            new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+              minimumFractionDigits: 2,
+            }).format(value || 0);
+
+          const handleNextStep = () => {
+            if (currentStep.value < 4) {
+              currentStep.value += 1;
+            }
+          };
+
+          const resetForm = () => {
+            form.senderName = "";
+            form.fiscalId = "";
+            form.origin = "";
+            form.destination = "";
+            form.cargoType = "";
+            form.weight = "";
+            form.dispatchDate = "";
+            form.arrivalDate = "";
+            currentStep.value = 1;
+          };
+
+          const submitForm = () => {
+            if (!isFormValid.value) return;
+
+            shipments.value.push({
+              id: Date.now(),
+              sender: form.senderName,
+              fiscalId: form.fiscalId,
+              origin: form.origin,
+              destination: form.destination,
+              cargoLabel: cargoTypeLabel.value,
+              status: statuses[0],
+              weight: Number(weightNumber.value.toFixed(1)),
+              cost: Number(costTotal.value.toFixed(2)),
+            });
+
+            Swal.fire({
+              icon: "success",
+              title: "Envío registrado",
+              text: "La solicitud se guardó en el panel y puedes seguir monitoreando su ciclo.",
+              timer: 2200,
+              showConfirmButton: false,
+            });
+
+            resetForm();
+          };
+
+          const advanceStatus = (shipment) => {
+            const currentIndex = statuses.indexOf(shipment.status);
+            if (currentIndex < statuses.length - 1) {
+              shipment.status = statuses[currentIndex + 1];
+            }
+          };
+
+          const nextStatusLabel = (shipment) => {
+            if (shipment.status === "Pendiente") return "Marcar En Tránsito";
+            if (shipment.status === "En Tránsito") return "Marcar Entregado";
+            return "Finalizado";
+          };
+
+          const confirmDeletion = (shipment) => {
+            Swal.fire({
+              title: "¿Eliminar solicitud?",
+              text: "Esta acción no se puede deshacer. Confirma para eliminar permanentemente.",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Eliminar",
+              cancelButtonText: "Cancelar",
+              confirmButtonColor: "#dc2626",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                shipments.value = shipments.value.filter((item) => item.id !== shipment.id);
+                Swal.fire({
+                  icon: "success",
+                  title: "Registro eliminado",
+                  timer: 1200,
+                  showConfirmButton: false,
+                });
+              }
+            });
+          };
+
+          return {
+            form,
+            steps,
+            currentStep,
+            shipments,
+            totals,
+            isFormValid,
+            costBase,
+            costTotal,
+            cargoTypeLabel,
+            formattedDate,
+            currency,
+            handleNextStep,
+            submitForm,
+            advanceStatus,
+            nextStatusLabel,
+            confirmDeletion,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
