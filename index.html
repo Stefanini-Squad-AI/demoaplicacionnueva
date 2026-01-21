@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GlobalFlow - Solicitud de Remesas</title>
+    <title>GlobalFlow - Solicitação de Remessas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -48,12 +48,12 @@
           <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p class="text-sm uppercase tracking-[0.4em] text-slate-400">GlobalFlow</p>
-              <h1 class="text-3xl font-semibold text-slate-50">Solicitud de Remesas</h1>
-              <p class="text-slate-300">Visibilidad total del ciclo financiero y operativo.</p>
+              <h1 class="text-3xl font-semibold text-slate-50">Solicitação de Remessas</h1>
+              <p class="text-slate-300">Visibilidade total do ciclo financeiro e operacional.</p>
             </div>
             <div class="flex items-center gap-3 text-sm text-slate-300">
               <i class="fa-solid fa-globe text-primary-400"></i>
-              Operaciones en tiempo real
+              Operações em tempo real
             </div>
           </div>
         </div>
@@ -61,7 +61,7 @@
 
       <main class="mx-auto max-w-6xl px-6 py-10 space-y-12">
         <section class="space-y-6">
-          <h2 class="text-lg font-semibold text-slate-100">Widgets Operativos</h2>
+          <h2 class="text-lg font-semibold text-slate-100">Widgets Operacionais</h2>
           <div class="grid gap-6 md:grid-cols-3">
             <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
               <div class="flex items-center justify-between">
@@ -95,9 +95,9 @@
 
         <section class="space-y-6">
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <h2 class="text-lg font-semibold text-slate-100">Paso a paso - Solicitud de Envío</h2>
+            <h2 class="text-lg font-semibold text-slate-100">Passo a passo - Solicitação de Envio</h2>
             <div class="flex gap-2 text-sm text-slate-300">
-              <span class="font-semibold text-primary-200">Paso {{ currentStep }} / 4</span>
+              <span class="font-semibold text-primary-200">Passo {{ currentStep }} / 4</span>
             </div>
           </div>
 
@@ -123,12 +123,12 @@
             <div class="mt-6 space-y-6">
               <div v-if="currentStep === 1" class="grid gap-4 md:grid-cols-2">
                 <label class="space-y-2 text-sm text-slate-300">
-                  <span>Nombre del Remitente</span>
+                  <span>Nome do Remetente</span>
                   <input
                     v-model="form.senderName"
                     type="text"
                     class="w-full rounded-2xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 outline-none transition focus:border-primary-400"
-                    placeholder="Ej. Transportes Vega"
+                    placeholder="Ex. Transportes Vega"
                   />
                 </label>
                 <label class="space-y-2 text-sm text-slate-300">
@@ -144,12 +144,12 @@
 
               <div v-else-if="currentStep === 2" class="grid gap-4 md:grid-cols-2">
                 <label class="space-y-2 text-sm text-slate-300">
-                  <span>Origen</span>
+                  <span>Origem</span>
                   <select
                     v-model="form.origin"
                     class="w-full rounded-2xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 outline-none transition focus:border-primary-400"
                   >
-                    <option value="">Seleccione</option>
+                    <option value="">Selecione</option>
                     <option value="Bogotá">Bogotá, Colombia</option>
                     <option value="Ciudad de México">Ciudad de México, México</option>
                     <option value="Santiago">Santiago, Chile</option>
@@ -162,7 +162,7 @@
                     v-model="form.destination"
                     class="w-full rounded-2xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 outline-none transition focus:border-primary-400"
                   >
-                    <option value="">Seleccione</option>
+                    <option value="">Selecione</option>
                     <option value="Madrid">Madrid, España</option>
                     <option value="Londres">Londres, Reino Unido</option>
                     <option value="São Paulo">São Paulo, Brasil</option>
@@ -205,7 +205,7 @@
                   />
                 </label>
                 <label class="space-y-2 text-sm text-slate-300">
-                  <span>Fecha de despacho</span>
+                  <span>Data de despacho</span>
                   <input
                     v-model="form.dispatchDate"
                     type="date"
@@ -213,7 +213,7 @@
                   />
                 </label>
                 <label class="space-y-2 text-sm text-slate-300">
-                  <span>Fecha estimada de arribo</span>
+                  <span>Data estimada de chegada</span>
                   <input
                     v-model="form.arrivalDate"
                     type="date"
@@ -225,25 +225,25 @@
               <div v-else class="space-y-4">
                 <div class="grid gap-4 md:grid-cols-2">
                   <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
-                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Resumen</p>
-                    <p class="text-sm text-slate-300">Remitente: <span class="font-medium text-slate-100">{{ form.senderName || 'Sin datos' }}</span></p>
-                    <p class="text-sm text-slate-300">Origen ➜ Destino: <span class="font-medium text-slate-100">{{ form.origin || '---' }} ➜ {{ form.destination || '---' }}</span></p>
-                    <p class="text-sm text-slate-300">Tipo de carga: <span class="font-medium text-slate-100">{{ cargoTypeLabel }}</span></p>
-                    <p class="text-sm text-slate-300">Peso: <span class="font-medium text-slate-100">{{ form.weight || 0 }} KG</span></p>
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Resumo</p>
+                  <p class="text-sm text-slate-300">Remetente: <span class="font-medium text-slate-100">{{ form.senderName || 'Sem dados' }}</span></p>
+                  <p class="text-sm text-slate-300">Origem ➜ Destino: <span class="font-medium text-slate-100">{{ form.origin || '---' }} ➜ {{ form.destination || '---' }}</span></p>
+                  <p class="text-sm text-slate-300">Tipo de carga: <span class="font-medium text-slate-100">{{ cargoTypeLabel }}</span></p>
+                  <p class="text-sm text-slate-300">Peso: <span class="font-medium text-slate-100">{{ form.weight || 0 }} KG</span></p>
                   </div>
                   <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
-                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Finanzas</p>
-                    <p class="text-sm text-slate-300">Costo base: <span class="font-medium text-slate-100">{{ currency(costBase) }}</span></p>
-                    <p class="text-sm text-slate-300">Tasas (12%): <span class="font-medium text-slate-100">{{ currency(costBase * 0.12) }}</span></p>
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Finanças</p>
+                    <p class="text-sm text-slate-300">Custo base: <span class="font-medium text-slate-100">{{ currency(costBase) }}</span></p>
+                    <p class="text-sm text-slate-300">Taxas (12%): <span class="font-medium text-slate-100">{{ currency(costBase * 0.12) }}</span></p>
                     <p class="text-2xl font-bold text-primary-400">{{ currency(costTotal) }}</p>
-                    <p class="text-xs text-slate-500">*El dato se actualizará en vivo</p>
+                    <p class="text-xs text-slate-500">*Os dados serão atualizados ao vivo</p>
                   </div>
                 </div>
                 <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
-                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Fechas</p>
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Datas</p>
                   <div class="grid gap-2 md:grid-cols-2">
                     <p class="text-sm text-slate-300">Despacho: <span class="font-medium text-slate-100">{{ formattedDate(form.dispatchDate) }}</span></p>
-                    <p class="text-sm text-slate-300">Arribo: <span class="font-medium text-slate-100">{{ formattedDate(form.arrivalDate) }}</span></p>
+                    <p class="text-sm text-slate-300">Chegada: <span class="font-medium text-slate-100">{{ formattedDate(form.arrivalDate) }}</span></p>
                   </div>
                 </div>
               </div>
@@ -256,14 +256,14 @@
                 @click="currentStep--"
               >
                 <i class="fa-solid fa-arrow-left mr-2"></i>
-                Atrás
+                Voltar
               </button>
               <button
                 class="rounded-2xl bg-primary-500 px-6 py-3 font-semibold text-white transition hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-slate-700"
                 v-if="currentStep < 4"
                 @click="handleNextStep"
               >
-                Siguiente
+                Próximo
                 <i class="fa-solid fa-arrow-right ml-2"></i>
               </button>
               <button
@@ -280,24 +280,24 @@
 
         <section class="space-y-6">
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <h2 class="text-lg font-semibold text-slate-100">Monitoreo de Solicitudes</h2>
-            <p class="text-sm text-slate-400">Actualiza estados y elimina con confirmación</p>
+            <h2 class="text-lg font-semibold text-slate-100">Monitoramento de Solicitações</h2>
+            <p class="text-sm text-slate-400">Atualize status e exclua com confirmação</p>
           </div>
 
           <div class="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 shadow-2xl shadow-slate-950/30">
             <div v-if="shipments.length === 0" class="rounded-2xl border border-dashed border-slate-700/80 p-8 text-center text-slate-400">
-              Aún no hay envíos registrados. Completa el formulario para agregar el primero.
+              Ainda não há envios registrados. Preencha o formulário para adicionar o primeiro.
             </div>
             <div v-else class="overflow-x-auto">
               <table class="w-full text-left text-sm text-slate-200">
                 <thead class="text-xs uppercase tracking-[0.4em] text-slate-500">
                   <tr>
-                    <th class="px-4 py-3">Remitente</th>
-                    <th class="px-4 py-3">Ruta</th>
+                    <th class="px-4 py-3">Remetente</th>
+                    <th class="px-4 py-3">Rota</th>
                     <th class="px-4 py-3">Peso (KG)</th>
-                    <th class="px-4 py-3">Costo</th>
-                    <th class="px-4 py-3">Estado</th>
-                    <th class="px-4 py-3">Acciones</th>
+                    <th class="px-4 py-3">Custo</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Ações</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-800">
@@ -313,22 +313,22 @@
                     <td class="px-4 py-4">{{ shipment.weight }}</td>
                     <td class="px-4 py-4 font-semibold text-primary-300">{{ currency(shipment.cost) }}</td>
                     <td class="px-4 py-4">
-                      <span
-                        class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
-                        :class="{
-                          'bg-amber-500/20 text-amber-200': shipment.status === 'Pendiente',
-                          'bg-blue-500/20 text-blue-200': shipment.status === 'En Tránsito',
-                          'bg-emerald-500/20 text-emerald-200': shipment.status === 'Entregado'
-                        }"
-                      >
-                        {{ shipment.status }}
-                      </span>
+                        <span
+                          class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                          :class="{
+                            'bg-amber-500/20 text-amber-200': shipment.status === 'Pendente',
+                            'bg-blue-500/20 text-blue-200': shipment.status === 'Em Trânsito',
+                            'bg-emerald-500/20 text-emerald-200': shipment.status === 'Entregue'
+                          }"
+                        >
+                          {{ shipment.status }}
+                        </span>
                     </td>
                     <td class="px-4 py-4">
                       <div class="flex flex-wrap gap-3">
                         <button
                           class="rounded-2xl border border-slate-700 px-3 py-1 text-xs text-slate-200 transition hover:border-primary-400"
-                          :disabled="shipment.status === 'Entregado'"
+                          :disabled="shipment.status === 'Entregue'"
                           @click="advanceStatus(shipment)"
                         >
                           {{ nextStatusLabel(shipment) }}
@@ -337,7 +337,7 @@
                           class="rounded-2xl border border-red-600/80 px-3 py-1 text-xs text-red-300 transition hover:border-red-400"
                           @click="confirmDeletion(shipment)"
                         >
-                          Eliminar
+                          Excluir
                         </button>
                       </div>
                     </td>
@@ -355,12 +355,12 @@
 
       createApp({
         setup() {
-          const statuses = ["Pendiente", "En Tránsito", "Entregado"];
+          const statuses = ["Pendente", "Em Trânsito", "Entregue"];
           const steps = [
-            { id: 1, label: "Identidad", icon: "fa-solid fa-id-card-clip" },
+            { id: 1, label: "Identidade", icon: "fa-solid fa-id-card-clip" },
             { id: 2, label: "Logística", icon: "fa-solid fa-route" },
-            { id: 3, label: "Temporalidad", icon: "fa-solid fa-calendar-days" },
-            { id: 4, label: "Finanzas", icon: "fa-solid fa-chart-line" },
+            { id: 3, label: "Temporalidade", icon: "fa-solid fa-calendar-days" },
+            { id: 4, label: "Finanças", icon: "fa-solid fa-chart-line" },
           ];
 
           const currentStep = ref(1);
@@ -402,20 +402,20 @@
             totalShipments: shipments.value.length,
             totalWeight: shipments.value.reduce((sum, shipment) => sum + shipment.weight, 0),
             ingresosReales: shipments.value
-              .filter((shipment) => shipment.status === "Entregado")
+              .filter((shipment) => shipment.status === "Entregue")
               .reduce((sum, shipment) => sum + shipment.cost, 0),
           }));
 
           const cargoTypeLabel = computed(() => {
             if (form.cargoType === "aereo") return "Aéreo";
             if (form.cargoType === "maritimo") return "Marítimo / Terrestre";
-            return "Sin seleccionar";
+            return "Sem seleção";
           });
 
           const formattedDate = (value) => {
             if (!value) return "---";
             const date = new Date(value);
-            return date.toLocaleDateString("es-ES", {
+            return date.toLocaleDateString("pt-BR", {
               day: "2-digit",
               month: "short",
               year: "numeric",
@@ -423,7 +423,7 @@
           };
 
           const currency = (value) =>
-            new Intl.NumberFormat("en-US", {
+            new Intl.NumberFormat("pt-BR", {
               style: "currency",
               currency: "USD",
               minimumFractionDigits: 2,
@@ -464,8 +464,8 @@
 
             Swal.fire({
               icon: "success",
-              title: "Envío registrado",
-              text: "La solicitud se guardó en el panel y puedes seguir monitoreando su ciclo.",
+              title: "Envio registrado",
+              text: "A solicitação foi salva no painel e você pode continuar monitorando seu ciclo.",
               timer: 2200,
               showConfirmButton: false,
             });
@@ -481,18 +481,18 @@
           };
 
           const nextStatusLabel = (shipment) => {
-            if (shipment.status === "Pendiente") return "Marcar En Tránsito";
-            if (shipment.status === "En Tránsito") return "Marcar Entregado";
+            if (shipment.status === "Pendente") return "Marcar Em Trânsito";
+            if (shipment.status === "Em Trânsito") return "Marcar Entregue";
             return "Finalizado";
           };
 
           const confirmDeletion = (shipment) => {
             Swal.fire({
-              title: "¿Eliminar solicitud?",
-              text: "Esta acción no se puede deshacer. Confirma para eliminar permanentemente.",
+              title: "Excluir solicitação?",
+              text: "Esta ação não pode ser desfeita. Confirme para excluir permanentemente.",
               icon: "warning",
               showCancelButton: true,
-              confirmButtonText: "Eliminar",
+              confirmButtonText: "Excluir",
               cancelButtonText: "Cancelar",
               confirmButtonColor: "#dc2626",
             }).then((result) => {
@@ -500,7 +500,7 @@
                 shipments.value = shipments.value.filter((item) => item.id !== shipment.id);
                 Swal.fire({
                   icon: "success",
-                  title: "Registro eliminado",
+                  title: "Registro excluído",
                   timer: 1200,
                   showConfirmButton: false,
                 });
